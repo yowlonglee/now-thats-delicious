@@ -1,14 +1,20 @@
 const mongoose = require ('mongoose');
 const Store = mongoose.model('Store');
 const multer = require('multer');
+
 const multerOptions = {
+  // Save photo into memory, resize it, and let multer uploads it
   storage: multer.memoryStorage(),
   fileFilter(req, file, next) {
     const isPhoto = file.mimetype.startsWith('image/');
     if (isPhoto) {
+      // When passing null as the first value and a second value into the callback function, 
+      // that means it worked and the second value is the one will be passed along
       next(null, true);
     } else {
-      next({message: 'That filetype isn\'t allowed!', false});
+      // When calling a callback function and pass something as the first value,
+      // that means it is an error
+      next({message: 'That filetype isn\'t allowed!'}, false);
     }
   }
 };
