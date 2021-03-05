@@ -48,8 +48,11 @@ exports.resize = async (req, res, next) => {
 };
 
 exports.createStore = async (req, res) => {
+  // save new store to MongoDB
   const store = await (new Store(req.body)).save();
+  // show a success flash message
   req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
+  // redirect to the new store page
   res.redirect(`/store/${store.slug}`);
 };
 
@@ -78,4 +81,17 @@ exports.updateStore = async (req, res) => {
   // Redirect them to the store and tell them it worked
   req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store →</a>`);
   res.redirect(`/stores/${store._id}/edit`);
+};
+
+exports.getStoreBySlug = async (req, res, next) => {
+  // 1. Find the store given the slug
+  const store = await Store.findOne({ slug: req.params.slug });
+  // MongoDB will return null if it can't find the query
+  // So we call next to call the "notFound" middleware
+  if(!store) {
+    return next();
+  }
+  // 2. Render out the store
+  res.render('store', { store, title: store.name });
+  // res.json(store);
 };

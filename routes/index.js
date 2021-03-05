@@ -24,4 +24,7 @@ router.post('/add/:id',
 // edit an existing store
 router.get('/stores/:id/edit', catchErrors(storeController.editStore));
 
+// go to an existing store page
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
+
 module.exports = router;
